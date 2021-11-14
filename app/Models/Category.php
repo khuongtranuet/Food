@@ -8,4 +8,9 @@ class Category extends Model
 {
     protected $table = 'categories';
     protected $fillable = ['name', 'description', 'image_path', 'created_at', 'updated_at'];
+
+    public function food()
+    {
+        return $this->hasMany('App\Models\Food');
+    }
 }

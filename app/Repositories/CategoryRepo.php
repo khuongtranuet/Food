@@ -76,4 +76,11 @@ class CategoryRepo extends BaseRepo
         return $query->get();
 
     }
+
+    public function insertCategory($data) {
+        Category::insert($data);
+        return '1';
+    }
+
+
 }
