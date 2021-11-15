@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\SessionUser;
 use App\Repositories\CategoryRepo;
 use Illuminate\Http\Request;
 
@@ -52,6 +53,5 @@ class CategoryController extends Controller
                 'pages' => ceil($total / $params['page_size'])
             ]
         ]);
-
     }
 }

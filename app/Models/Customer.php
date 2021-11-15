@@ -46,6 +46,24 @@ class Customer extends Authenticatable
         return $this->hasMany('App\Models\Order');
     }
 
+    /**
+     * Hàm lấy thông tin sản phẩm trong giỏ hàng của khách hàng
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function food()
+    {
+        return $this->belongsToMany(
+            'App\Models\Food', 'carts' , 'customer_id', 'food_id')
+            ->using('App\Models\Cart')
+            ->withPivot([
+                'customer_id',
+                'food_id',
+                'quantity',
+                'created_at',
+                'updated_at',
+            ]);
+    }
 //    /**
 //     * Hàm lấy thông tin các mã giảm giá của khách hàng
 //     *
