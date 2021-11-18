@@ -11,6 +11,12 @@ use Illuminate\Support\Str;
 
 class LoginController extends Controller
 {
+    /**
+     * URL: http://localhost:8000/api/v1/login
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function login(Request $request) {
         $checkLogin = array();
         if (isset($request->email)) {
@@ -49,6 +55,12 @@ class LoginController extends Controller
         }
     }
 
+    /**
+     * URL: http://localhost:8000/api/v1/refresh_token
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function refresh_token(Request $request) {
         $token = $request->header('token');
         $checkTokenIsValid = SessionUser::where('token', $token)->first();
@@ -80,6 +92,12 @@ class LoginController extends Controller
 
     }
 
+    /**
+     * URL: http://localhost:8000/api/v1/delete_token
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function delete_token(Request $request) {
         $token = $request->header('token');
         $checkTokenIsValid = SessionUser::where('token', $token)->first();

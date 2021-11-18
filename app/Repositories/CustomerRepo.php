@@ -3,7 +3,6 @@
 
 namespace App\Repositories;
 
-
 use App\Models\Address;
 use App\Models\Customer;
 use App\Models\Order;
@@ -99,8 +98,8 @@ class CustomerRepo extends BaseRepo
             $customer['gender'] = $data['gender'];
         }
         if (isset($data['password']) && $data['password'] != null) {
-//			$customer['password'] = $data['password'];
-            $customer['password'] = hash('sha256', $data['password'].constants('TOKEN')) ;
+            $customer['password'] = bcrypt($data['password']);
+//            $customer['password'] = hash('sha256', $data['password'].constants('TOKEN')) ;
         }
         if (isset($data['status']) && $data['status'] != null) {
             $customer['status'] = $data['status'];
@@ -354,9 +353,11 @@ class CustomerRepo extends BaseRepo
             $customer['gender'] = $data['gender'];
         }
         if (isset($data['password']) && $data['password'] != null && isset($data['new_password'])) {
-            $customer['password'] = hash('sha256', $data['new_password'].constants('TOKEN')) ;
+            $customer['password'] = bcrypt($data['new_password']);
+//            $customer['password'] = hash('sha256', $data['new_password'].constants('TOKEN')) ;
         }elseif (isset($data['password']) && $data['password'] != null) {
-            $customer['password'] = hash('sha256', $data['password'].constants('TOKEN')) ;
+            $customer['password'] = bcrypt($data['password']);
+//            $customer['password'] = hash('sha256', $data['password'].constants('TOKEN')) ;
         }
         if (isset($data['status']) && $data['status'] != null) {
             $customer['status'] = $data['status'];
@@ -412,6 +413,121 @@ class CustomerRepo extends BaseRepo
         $result = Customer::where('id', $id)->delete();
         if (isset($result)) {
             return '1';
+        }
+    }
+
+    /**
+     * Hàm thêm mới địa chỉ khách hàng
+     * @param $data : thông tin địa chỉ mới của khách hàng
+     */
+    public function insertAddress($data)
+    {
+        $address = array();
+        if (isset($data['customer_id']) && $data['customer_id'] != null) {
+            $customer_id = $data['customer_id'];
+            $address_old = array('status' => 0);
+            Address::where('status', 1)->where('customer_id', $customer_id)->update($address_old);
+        }
+        if (isset($data['fullname']) && $data['fullname'] != null) {
+            $address['fullname'] = $data['fullname'];
+        }
+        if (isset($data['mobile']) && $data['mobile'] != null) {
+            $address['mobile'] = $data['mobile'];
+        }
+        if (isset($data['province']) && $data['province'] != null) {
+            $address['province_id'] = $data['province'];
+        }
+        if (isset($data['district']) && $data['district'] != null) {
+            $address['district_id'] = $data['district'];
+        }
+        if (isset($data['ward']) && $data['ward'] != null) {
+            $address['ward_id'] = $data['ward'];
+        }
+        if (isset($data['address']) && $data['address'] != null) {
+            $address['address'] = $data['address'];
+        }
+        if (isset($data['type_address']) && $data['type_address'] != null) {
+            $address['type'] = $data['type_address'];
+        }
+        $address['status'] = 1;
+        if (isset($customer_id) && $customer_id) {
+            $address['created_at'] = date('Y-m-d H:i:s');
+            $address['updated_at'] = date('Y-m-d H:i:s');
+            $address['customer_id'] = $customer_id;
+            Address::insert($address);
+        }
+        return '1';
+    }
+
+    /**
+     * Hàm chỉnh sửa địa chỉ khách hàng
+     * @param $data : thông tin địa chỉ mới của khách hàng
+     */
+    public function updateAddress($data)
+    {
+        $address = array();
+        if (isset($data['fullname']) && $data['fullname'] != null) {
+            $address['fullname'] = $data['fullname'];
+        }
+        if (isset($data['mobile']) && $data['mobile'] != null) {
+            $address['mobile'] = $data['mobile'];
+        }
+        if (isset($data['province']) && $data['province'] != null) {
+            $address['province_id'] = $data['province'];
+        }
+        if (isset($data['district']) && $data['district'] != null) {
+            $address['district_id'] = $data['district'];
+        }
+        if (isset($data['ward']) && $data['ward'] != null) {
+            $address['ward_id'] = $data['ward'];
+        }
+        if (isset($data['address']) && $data['address'] != null) {
+            $address['address'] = $data['address'];
+        }
+        if (isset($data['type_address']) && $data['type_address'] != null) {
+            $address['type'] = $data['type_address'];
+        }
+        if (isset($data['customer_id']) && $data['customer_id'] != null) {
+            $query = Address::where('customer_id', $data['customer_id']);
+        }
+        if (isset($data['address_id']) && $data['address_id'] != null) {
+            $query->where('id', $data['address_id']);
+        }
+        $query->update($address);
+        return '1';
+    }
+
+    /**
+     * Hàm thay đổi địa chỉ giao hàng mặc định
+     * @param $data
+     */
+    public function changeAddress($data)
+    {
+        $customer_id = isset($data['customer_id']) ? $data['customer_id'] : '';
+        $id = isset($data['id']) ? $data['id'] : '';
+        if ($customer_id != '' && $id != '') {
+            $address = array('status' => 0);
+            Address::where('status', 1)->where('customer_id', $customer_id)->update($address);
+
+            $address = array('status' => 1);
+            Address::where('customer_id', $customer_id)->where('id', $id)->update($address);
+        }
+        return '1';
+    }
+
+    /**
+     * Hàm xóa địa chỉ khách hàng
+     * @param $data : thông tin địa chỉ cần xóa
+     */
+    public function deleteAddress($data)
+    {
+        $address_id = isset($data['address_id']) ? $data['address_id'] : '';
+        $customer_id = isset($data['customer_id']) ? $data['customer_id'] : '';
+        if ($address_id != '' && $customer_id != '') {
+            $result = Address::where('id', $address_id)->where('customer_id', $customer_id)->delete();
+            if (isset($result)) {
+                return '1';
+            }
         }
     }
 }

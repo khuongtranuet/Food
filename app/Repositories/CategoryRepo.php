@@ -77,6 +77,11 @@ class CategoryRepo extends BaseRepo
 
     }
 
+    /**
+     * Hàm thêm mới danh mục sản phẩm
+     *
+     * @param $data : Dữ liệu danh mục sản phẩm mới
+     */
     public function insertCategory($data) {
         Category::insert($data);
         return '1';

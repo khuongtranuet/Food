@@ -69,24 +69,51 @@ Route::group(['namespace' => 'Api'], function () {
 
         /**
          * http://localhost:8000/api/v1/customers
+         * http://localhost:8000/api/v1/customers/update
          */
         Route::prefix('customers')->middleware('checkToken')->group(function (){
             Route::get('/', 'CustomerController@detail');
+            Route::post('/update', 'CustomerController@update');
         });
 
         /**
          * http://localhost:8000/api/v1/addresses
+         * http://localhost:8000/api/v1/addresses?id=
+         * http://localhost:8000/api/v1/addresses/add
+         * http://localhost:8000/api/v1/addresses/update/{id}
+         * http://localhost:8000/api/v1/addresses/change/{id}
+         * http://localhost:8000/api/v1/addresses/delete/{id}
          */
         Route::prefix('addresses')->middleware('checkToken')->group(function (){
             Route::get('/', 'CustomerController@address');
+            Route::post('/add', 'CustomerController@store_address');
+            Route::put('/update/{id}', 'CustomerController@update_address');
+            Route::put('/change/{id}', 'CustomerController@change_address');
+            Route::delete('/delete/{id}', 'CustomerController@delete_address');
         });
 
         /**
          * http://localhost:8000/api/v1/carts
+         * http://localhost:8000/api/v1/carts/add
+         * http://localhost:8000/api/v1/carts/update
+         * http://localhost:8000/api/v1/carts/delete
+         * http://localhost:8000/api/v1/carts/delete/{id}
          */
         Route::prefix('carts')->middleware('checkToken')->group(function (){
             Route::get('/', 'CartController@detail');
-            Route::post('/update', 'CartController@update');
+            Route::post('/add', 'CartController@add');
+            Route::put('/update', 'CartController@update');
+            Route::delete('/delete/{id}', 'CartController@delete');
+            Route::delete('/delete', 'CartController@delete');
+        });
+
+        /**
+         * http://localhost:8000/api/v1/payments
+         * http://localhost:8000/api/v1/payments/checkout?type=
+         */
+        Route::prefix('payments')->middleware('checkToken')->group(function (){
+            Route::post('/', 'CartController@update');
+            Route::put('/checkout', 'PaymentController@checkout');
         });
     });
 });
